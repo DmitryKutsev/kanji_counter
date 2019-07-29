@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>MY NLP APP</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.7/css/bootstrap.min.css" crossorigin="anonimus">
+    </head>
+    <body>
+        <div>
+        <h1>Hello, this is test app I've made for HSE interview!</h1>
+            <ul class="menu">
+                <h3>Menu:</h3>
+                <li class="menu_link">
+                    <a href="/parser/" class="parser">Parser</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/" class="translator_and_analyser">Translator</a>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            <form method="POST">
+                <h2>Translator page</h2>
+                <h2>Insert kanji or word:</h2>
+                {{inp_form.as_p}}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+        <form method="POST">
+        <div class="container">
+            <h2>{{ word }}</h2>
+            <h2>{{ frequency }}</h2>
+        </div>
+        <div class="container">
+            <h2><b>Pronunciation options:</b></h2>
+            <h3>{{ translate }}</h3>
+            <h2><b>Translate options:</b></h2>
+            <h3>{{ pron }}</h3>
+        </div>
+        </form>
+
+    </body>
+
+</html>

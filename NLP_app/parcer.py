@@ -70,7 +70,7 @@ def freq_from_one_file(file, word):
     print(midashi_fdist.most_common(5))
     filename = file.split('\\')[-1]
     midashi_file.close()
-    return str('Frequency of this word in file ') + str(filename)+ ' is ' + str(midashi_fdist[word])
+    return str('Word frequency in downloaded topics: ') + str(midashi_fdist[word])
 
 #freq_from_one_file('07.12.2019__shakai.txt', '首相')
 
@@ -170,4 +170,4 @@ def dict_mult_symbol(inp_kanji):
         result_string = "KANJI NOT FOUND"
         result_list = [result_string, result_string]
         return result_list
-dict_mult_symbol("ппп")
+#dict_mult_symbol("ппп")
