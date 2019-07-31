@@ -31,7 +31,9 @@ def tokenize_stopping(sentence):
             #если это НЕ одиночный символ ХИРАГАНЫ, и при этом есть любой символ каны(включая хирагану)
             print(i)
             tokens_list.append(i)
-
+    print(tokens_list)
+    return tokens_list
+tokenize_stopping('土方歳三のきせる？滋賀・草津宿に新選組の忘れ物か')
 
 def translate_in_yarxi(input_kanji):
     path = os.getcwd() + '\\geckodriver.exe'
@@ -96,8 +98,15 @@ def if_today_exists():
 #if_today_exists()
 
 def all_topics():
+    today = datetime.date.today()
+    date = str(today)
     path = os.getcwd() + '\\shakai_topics'
-    return os.listdir(path)
+    topic_listdir = []
+    re_string = r'(?P<year>[0-9]{4}).(?P<mounth>[0-9]{2}).(?P<day>[0-9]{2})'
+    for i in os.listdir(path):
+        if re.match(re_string, i):
+            topic_listdir.append(i)
+    return topic_listdir
 
 all_topics()
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MY NLP APP</title>
+</head>
+<body>
+        <div>
+        <h1>Hello, this is the test app I've made for HSE interview!</h1>
+            <ul class="menu">
+                <h3>Menu:</h3>
+                <li class="menu_link">
+                    <a href="/" class="menu_el">Parser</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/translator/" class="menu_el">Translator</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/phrase/" class="menu_el">Phrase parser</a>
+                </li>
+            </ul>
+        <div class="container">
+            <form method="POST">
+                <h2>Translator page</h2>
+                <h2>Insert phrase:</h2>
+                {{inp_form.as_p}}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+        <div class="container">
+            <h2>Tokenized phrase elements(after stoplist regular expression):</h2>
+            <br>
+            <ul class="dropdown">
+                {% for i in tokenized_list %}
+                    <li><strong>{{ i }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+</body>
+</html>

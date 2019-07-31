@@ -5,3 +5,6 @@ class InputForm(forms.Form):
 
 class OutputForm(forms.Form):
     output = forms.CharField(widget=forms.Textarea)
+
+class OneMoreInputForm(forms.Form):
+    input = forms.CharField(widget=forms.Textarea)

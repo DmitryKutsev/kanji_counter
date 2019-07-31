@@ -8,14 +8,17 @@
     </head>
     <body>
         <div>
-        <h1>Hello, this is test app I've made for HSE interview!</h1>
+        <h1>Hello, this is the test app I've made for HSE interview!</h1>
             <ul class="menu">
                 <h3>Menu:</h3>
                 <li class="menu_link">
-                    <a href="/" class="parser">Parser</a>
+                    <a href="/" class="menu_el">Parser</a>
                 </li>
                 <li class="menu_link">
-                    <a href="/translator/" class="translator_and_analyser">Translator</a>
+                    <a href="/translator/" class="menu_el">Translator</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/phrase/" class="menu_el">Phrase parser</a>
                 </li>
             </ul>
         </div>
@@ -36,7 +39,7 @@
         <div class="container">
             <h2><b>Pronunciation options:</b></h2>
             <h3>{{ translate }}</h3>
-            <h2><b>Translate options:</b></h2>
+            <h2><b>Translation options:</b></h2>
             <h3>{{ pron }}</h3>
         </div>
         </form>

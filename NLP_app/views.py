@@ -12,26 +12,67 @@ def index(request):
 # Create your views here.
 def translator_input(request):
     inp_form = forms.InputForm()
+    if parcer.all_topics():
+        all_topics_list = parcer.all_topics()
+    else:
+        all_topics_list = []
     if request.method == 'POST':
         inp_form = forms.InputForm(request.POST)
     if inp_form.is_valid():
         print("YEP")
         print(inp_form)
         print(inp_form.cleaned_data['input'])
-        adress = "C:\\Dima\\NLP\\shinbun_analyse\\07.11.2019__shakai.txt"
-        file = adress.split('\\')[-1]
-        string = parcer.freq_from_one_file(adress,inp_form.cleaned_data['input'])
+        string = parcer.freq_from_one_file(inp_form.cleaned_data['input'])
         kanji = inp_form.cleaned_data['input']
         translation = parcer.dict_mult_symbol(inp_form.cleaned_data['input'])
-        return render(request, 'NLP_app/translator_and_analyser.html', {'inp_form':inp_form, 'text':file, 'word': kanji, 'frequency':string, 'translate': translation[0], 'pron': translation[1]})
+        return render(request, 'NLP_app/translator_and_analyser.html', {
+            'inp_form':inp_form, 'word': kanji, 'frequency':string, 'translate': translation[0], 'pron': translation[1], 'all_topics': all_topics_list
+        })
     else:
-        return render(request, 'NLP_app/translator_and_analyser.html', {'inp_form': inp_form})
+        return render(request, 'NLP_app/translator_and_analyser.html', {'inp_form': inp_form, 'all_topics': all_topics_list})
 
 
 def parser_input(request):
-    parser_form = forms.OutputForm()
-    return render(request, 'NLP_app/parser.html', {'out_form':parser_form})
+    all_topics_list = parcer.all_topics()
+    today_topics_list = []
+    if parcer.if_today_exists():
+        print('here')
+        print(parcer.if_today_exists)
+        today_topics_list = parcer.shakai_topiks_by_date()
+        return render(request, 'NLP_app/parser.html', {'today_topics': today_topics_list, 'all_topics': all_topics_list})
+    else:
+        if (request.GET.get('get_topics')):
+            "now well"
+            today_topics_list = parcer.shakai_topiks_by_date()
+            all_topics_list = parcer.all_topics()
+            return render(request, 'NLP_app/parser.html', {'today_topics': today_topics_list, 'all_topics': all_topics_list})
+        else:
+            return render(request, 'NLP_app/parser.html', {'today_topics': today_topics_list, 'all_topics': all_topics_list})
 
+
+def phrase_parser_input(request):
+    inp_form = forms.OneMoreInputForm()
+    tokenized_list = []
+    if request.method == 'POST':
+        inp_form = forms.InputForm(request.POST)
+    if inp_form.is_valid():
+        tokenized_list = parcer.tokenize_stopping(inp_form.cleaned_data['input'])
+
+
+    return render(request, 'NLP_app/phrase_parser.html', {'inp_form': inp_form, 'tokenized_list': tokenized_list})
+
+
+
+
+
+
+
+
+
+
+
+
+#####################################
 def menu(request):
     context = {
         'contacts': [

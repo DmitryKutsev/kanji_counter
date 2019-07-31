@@ -20,10 +20,10 @@ from django.conf.urls import include
 
 
 urlpatterns = [
-    path('', views.translator_input, name='forms'),
+    path('', views.parser_input, name='forms'),
+    path('translator/', views.translator_input, name='forms'),
+    path('phrase/', views.phrase_parser_input, name='forms'),
+
     #path('', views.output, name='forms'),
-    path('admin/', admin.site.urls),
-    path('parser/', views.parser_input, name='forms'),
-    path('test/', views.test_page),
-    path('nlp_app/', include('NLP_app.urls')),
+
 ]
