@@ -10,22 +10,32 @@
             <ul class="menu">
                 <h3>Menu:</h3>
                 <li class="menu_link">
-                    <a href="/parser/" class="parser">Parser</a>
+                    <a href="/" class="parser">Parser</a>
                 </li>
                 <li class="menu_link">
-                    <a href="/" class="translator_and_analyser">Translator</a>
+                    <a href="/translator/" class="translator_and_analyser">Translator</a>
                 </li>
             </ul>
         </div>
-            <form method="POST">
-                <h2>Parser page</h2>
-                <h2>Haven't decided yet, how I'll put information here</h2>
-
-
-                <h2>{{ out_form }}</h2>
-
+            <form method="get">
+            <input type="submit" value="Get today's Topics" name="get_topics" id="start_submit" class="btn btn-success"/>
             </form>
+            <br>
+            <h2>ALL TOPICS IN FOLDER:</h2>
+            <ul class="dropdown">
+                {% for i in all_topics %}
+                    <li><strong>{{ i|slice:-4 }}</strong></li>
+                {% endfor %}
+            </ul>
         </div>
-
+        <div class="container">
+            <h2>List of today's topics from Japanese Mainichi newspaper:</h2>
+            <br>
+            <ul class="dropdown">
+                {% for i in today_topics %}
+                    <li><strong>{{ i }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
 </body>
 </html>

@@ -51,80 +51,132 @@ def translate_in_yarxi(input_kanji):
 
 
 #здесь токенизация содержится не отдельной функцией(надоб зафиксить)
-def freq_from_one_file(file, word):
-    print(os.getcwd())
-    midashi_file = open(file, 'r',encoding='Utf-8')
-    midashi_text = midashi_file.read()
-    segmenter = tinysegmenter.TinySegmenter()
-    all_japanese_symbols = r'[\u3041-\u3096\u3400-\u4DB5\u4E00-\u9FCB\uF900-\uFA6A\u30A0-\u30FF]+'
-    stop_re = r'[\u3041-\u3096]'
+def freq_from_one_file(word):
+    fdist = 0
+    midashi_fdist = 0
+    path = os.getcwd() + '\\shakai_topics'
     tokens_list = []
-    for i in segmenter.tokenize(midashi_text):
-        if not re.fullmatch(stop_re, i) and re.search(all_japanese_symbols, i):
-            # если это НЕ одиночный символ ХИРАГАНЫ, и при этом есть любой символ каны(включая хирагану)
-            #print(i)
-            tokens_list.append(i)
-    midashi_nltk = nltk.Text(tokens_list)
-    #test_concordance = midashi_nltk.concordance('社員')
-    midashi_fdist = nltk.FreqDist(midashi_nltk)
-    print(midashi_fdist.most_common(5))
-    filename = file.split('\\')[-1]
-    midashi_file.close()
-    return str('Word frequency in downloaded topics: ') + str(midashi_fdist[word])
+    if os.path.exists(path):
+        for i in os.listdir(path):
+            midashi_file = open(path + '\\' + i, 'r',encoding='Utf-8')
+            midashi_text = midashi_file.read()
+            segmenter = tinysegmenter.TinySegmenter()
+            all_japanese_symbols = r'[\u3041-\u3096\u3400-\u4DB5\u4E00-\u9FCB\uF900-\uFA6A\u30A0-\u30FF]+'
+            stop_re = r'[\u3041-\u3096]'
+            for i in segmenter.tokenize(midashi_text):
+                if not re.fullmatch(stop_re, i) and re.search(all_japanese_symbols, i):
+                    # если это НЕ одиночный символ ХИРАГАНЫ, и при этом есть любой символ каны(включая хирагану)
+                    tokens_list.append(i)
+
+            midashi_nltk = nltk.Text(tokens_list)
+            midashi_fdist = nltk.FreqDist(midashi_nltk)
+            midashi_file.close()
+            fdist = fdist + midashi_fdist[word]
+        print(tokens_list)
+        print(fdist)
+        return str('Word frequency in downloaded topics: ') + str(midashi_fdist[word])
+    else:
+        return str('Word frequency in downloaded topics: ') + str(0)
 
 #freq_from_one_file('07.12.2019__shakai.txt', '首相')
+#freq_from_one_file('北九州')
+
+def if_today_exists():
+    today = datetime.date.today()
+    filename = str(today) + '.txt'
+    path = os.getcwd() + '\\shakai_topics'
+    earlier_topics_list = []
+    #print(topics_list)
+    if filename in os.listdir(path):
+        print(1)
+        return True
+    else:
+        print(0)
+        return None
+#if_today_exists()
+
+def all_topics():
+    path = os.getcwd() + '\\shakai_topics'
+    return os.listdir(path)
+
+all_topics()
+
+
+def earlier_topics():
+    today = datetime.date.today()
+    filename = str(today) + '.txt'
+    path = os.getcwd() + '\\shakai_topics'
+    earlier_topics_list = []
+    #print(topics_list)
+    for i in os.listdir(path):
+        if i != filename:
+            earlier_topics_list.append(i)
+    #print(earlier_topics_list)
+    return earlier_topics_list
+#earlier_topics()
+
+
+def shakai_topiks_by_date():
+    today = datetime.date.today()
+    date = str(today)
+    path = os.getcwd() + '\\shakai_topics'
+    if not os.path.exists(path):
+        os.mkdir(path)
+    input_file = path + '\\' + date + '.txt'
+    input_file_name = date + '.txt'
+    topic_list = []
+    if input_file_name not in os.listdir(path):
+        input_handle = open(input_file, 'w', encoding="utf-8")
+        counter = 0
+        page_number = 1
+        while counter == 0:
+            shinbun_shakai = urlopen('https://mainichi.jp/shakai/' + str(page_number))
+            shakai_bs = bs(shinbun_shakai , 'html.parser')
+            midashi_list = shakai_bs.find('ul',{"class":"list-typeA"})
+            re_string = r'(?P<year>[0-9]{4}).(?P<mounth>[0-9]{2}).(?P<day>[0-9]{2})'
+            if re.match(re_string, date):
+                input_compare = re.match(re_string, date)
+                input_year = input_compare.group('year')
+                input_mounth = input_compare.group('mounth')
+                input_day = input_compare.group('day')
+            #print(midashi_list)
+            num = 0
+            for i in midashi_list:
+                num +=1
+                #print(i)
+                midashi_topic = i.findNext('span', {"class": "midashi"}).text + '\n'
+                if num%2 == 0:
+                    pass
+                try:
+                    cycle_compare = re.match(re_string, i.findNext('span', {"class": "date"}).text)
+                    if cycle_compare.group('year') == input_year and cycle_compare.group('day') == input_day and cycle_compare.group('mounth') == input_mounth:
+                        #print(i.findNext('span', {"class": "date"}).text)
+                        if num % 2 == 0:
+                            input_handle.write(midashi_topic)
+                            #print(midashi_topic)
+                            topic_list.append(midashi_topic)
+                    else:
+                        counter = 1
+                except AttributeError:
+                    print("there is no text")
+            page_number += 1
+        input_handle.close()
+        #print(topic_list)
+        return topic_list
+    else:
+        topic_list.append('TODAY TOPICS HAVE ALREADY PARSED:')
+        input_handle = open(input_file, 'r', encoding="utf-8")
+        for i in input_handle:
+            #print('exists')
+            #print(i)
+            topic_list.append(i)
+        #print(topic_list)
+        return topic_list
+
+#shakai_topiks_by_date()
 
 
 
-def today_shakai_topiks():
-    today = datetime.date.today().strftime("%m.%d.%Y")
-    if not os.path.exists("/etc/hosts"):
-        os.mkdir(os.getcwd() + '\\shakai_topics')
-    input_file = os.getcwd() + '\\shakai_topics\\' + today + '__shakai.txt'
-    #foldiers for topics sorted by date
-    input_handle = open(input_file, 'w', encoding="utf-8")
-
-    midashi_dict = {}
-    shinbun_shakai = urlopen('https://mainichi.jp/shakai/')
-    shakai_bs = bs(shinbun_shakai , 'html.parser')
-    midashi_list = shakai_bs.find('ul',{"class":"list-typeD"})
-    print(midashi_list)
-    for li in midashi_list.find_all('li'):
-        midashi_text = li.find('span',{"class":"midashi"}).text
-        midashi_date = li.find('p', {"class": "date"}).text
-        midashi_href = li.find('a', href=True)['href']
-        input_handle.write('Date: ' + midashi_date + '   Midashi:'+ midashi_text + '   Link:  ' + midashi_href + '\n')
-        #print(midashi_text, midashi_date)
-        midashi_dict.update({midashi_text: midashi_date})
-
-    for key, value in midashi_dict.items():
-        print(key, value, "\n")
-
-    print(len(midashi_dict))
-    today = datetime.date.today().strftime("%m/%d/%Y")
-    print(today)
-    input_handle.close()
-#today_shakai_topiks()
-
-def dict_one_symbol(inp_kanji):
-    for kanji in list(inp_kanji):
-        print("\n\n\n", "KANJI ", kanji, " MEANINGS: ", "\n\n\n")
-        url = 'https://kanjiapi.dev/v1/words/'
-        kanji = urllib.parse.quote(kanji)
-        full_url = url + kanji
-       #kanji_link = url + str(kanji)
-        data = urllib.request.urlopen(full_url).read()
-        #result = data.decode()
-        result = json.loads(data)
-        print(result)
-        for i in result:
-            for j in i['meanings']:
-                for k in j['glosses']:
-                    print(k)
-
-        #print(i['meanings'])
-    #print(type(result))
-#dict_one_symbol("北海道")
 
 def dict_mult_symbol(inp_kanji):
     print(inp_kanji)
