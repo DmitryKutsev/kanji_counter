@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MY NLP APP</title>
+</head>
+<body>
+        <div>
+        <h1>Hello, this is the test app I've made for HSE interview!</h1>
+            <ul class="menu">
+                <h3>Menu:</h3>
+                <li class="menu_link">
+                    <a href="/" class="menu_el">Parser</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/translator/" class="menu_el">Translator</a>
+                </li>
+                <li class="menu_link">
+                    <a href="/phrase/" class="menu_el">Phrase parser</a>
+                </li>
+            </ul>
+        </div>
+            <form method="get">
+            <input type="submit" value="Get today's Topics" name="get_topics" id="start_submit" class="btn btn-success"/>
+            </form>
+            <br>
+            <h2>ALL TOPICS IN FOLDER:</h2>
+            <ul class="dropdown">
+                {% for i in all_topics %}
+                    <li><strong>{{ i|slice:-4 }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="container">
+            <h2>List of today's topics from Japanese Mainichi newspaper:</h2>
+            <br>
+            <ul class="dropdown">
+                {% for i in today_topics %}
+                    <li><strong>{{ i }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+</body>
+</html>
